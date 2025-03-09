@@ -1,0 +1,27 @@
+services:
+  python:
+    build:
+      context: .
+      target: dev
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+    tty: true
+    volumes:
+      - ./:/home/nonroot/app
+      - ./config/profile.conf:/home/nonroot/.aws/config
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566" # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - GATEWAY_LISTEN=0.0.0.0:4566
+      - SERVICES=sqs
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"

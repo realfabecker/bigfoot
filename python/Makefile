@@ -1,4 +1,4 @@
-.PHONY: build
+.PHONY: latest
 latest: build-info docker-build
 
 .PHONY: build-info
@@ -13,4 +13,4 @@ build-info:
 .PHONY: docker-build
 docker-build:
 	$(info [INF] Building docker image)
-	docker buildx build --push
+	docker buildx bake --push
